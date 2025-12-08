@@ -1,29 +1,29 @@
-import google.generativeai as genai
-from config import GEMINI_API_KEY
-from google.api_core import exceptions
+import google .generativeai as genai 
+from config import GEMINI_API_KEY 
+from google .api_core import exceptions 
 
 
-class Generator:
+class Generator :
     """Генерация ответов через Gemini API с гибридным режимом RAG"""
-    
-    def __init__(self):
-        if not GEMINI_API_KEY:
-            # Проверка наличия ключа API
-            raise ValueError("Не найден GEMINI_API_KEY в .env файле!")
-        
-        genai.configure(api_key=GEMINI_API_KEY)
-        # Используем актуальную модель для предотвращения 404 ошибок
-        self.model = genai.GenerativeModel('gemini-2.5-flash') 
-        print("✅ Gemini API подключен")
-    
-    def generate(self, question: str, context: str) -> str:
+
+    def __init__ (self ):
+        if not GEMINI_API_KEY :
+
+            raise ValueError ("Не найден GEMINI_API_KEY в .env файле!")
+
+        genai .configure (api_key =GEMINI_API_KEY )
+
+        self .model =genai .GenerativeModel ('gemini-2.5-flash')
+        print ("✅ Gemini API подключен")
+
+    def generate (self ,question :str ,context :str )->str :
         """
         Сгенерировать ответ. Использует контекст, если он есть, 
         иначе переключается на общие знания (Hybrid Mode).
         """
-        
-        # 📝 ОБНОВЛЕННЫЙ ПРОМПТ (Гибридный режим и Синтез)
-        prompt = f"""Ты - помощник по государственным услугам Казахстана.
+
+
+        prompt =f"""Ты - помощник по государственным услугам Казахстана.
 
 Контекст из базы знаний:
 {context}
@@ -39,25 +39,25 @@ class Generator:
 - Пиши простым и дружелюбным языком.
 
 Ответ:"""
-        
-        try:
-            response = self.model.generate_content(prompt)
-            
-            if response.text:
-                return response.text
-            else:
-                # Обработка пустого ответа (например, из-за фильтров безопасности)
-                block_reason = response.prompt_feedback.block_reason.name if response.prompt_feedback.block_reason else "Неизвестно"
-                print(f"⚠️ Gemini вернул пустой ответ. Причина: {block_reason}")
+
+        try :
+            response =self .model .generate_content (prompt )
+
+            if response .text :
+                return response .text 
+            else :
+
+                block_reason =response .prompt_feedback .block_reason .name if response .prompt_feedback .block_reason else "Неизвестно"
+                print (f"⚠️ Gemini вернул пустой ответ. Причина: {block_reason}")
                 return "К сожалению, не удалось сгенерировать ответ. Возможно, запрос был заблокирован фильтрами AI."
 
-        except exceptions.NotFound as e:
-            print(f"❌ Ошибка 404 (NotFound): {e}")
+        except exceptions .NotFound as e :
+            print (f"❌ Ошибка 404 (NotFound): {e}")
             return "Ошибка: Модель AI не найдена. Убедитесь, что имя модели ('gemini-2.5-flash') корректно."
-        except exceptions.ResourceExhausted as e:
-            print(f"❌ Ошибка лимита (ResourceExhausted): {e}")
+        except exceptions .ResourceExhausted as e :
+            print (f"❌ Ошибка лимита (ResourceExhausted): {e}")
             return "Ошибка: Превышен лимит использования API. Попробуйте позже."
-        except Exception as e:
-            # Общий обработчик для всех остальных ошибок
-            print(f"❌ Критическая ошибка API: {e}") 
+        except Exception as e :
+
+            print (f"❌ Критическая ошибка API: {e}")
             return "Произошла техническая ошибка при обращении к AI."
