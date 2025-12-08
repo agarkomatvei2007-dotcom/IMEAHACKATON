@@ -1,0 +1,13 @@
+# Основные зависимости
+google-generativeai>=0.3.0
+chromadb>=0.4.0
+streamlit>=1.30.0
+sentence-transformers>=2.3.0
+python-dotenv>=1.0.0
+
+# Для визуализации и аналитики
+plotly>=5.18.0
+pandas>=2.0.0
+
+# Для работы с PDF
+PyPDF2>=3.0.0
