@@ -16,13 +16,272 @@ initial_sidebar_state ="expanded"
 
 st .markdown ("""
 <style>
+    /* Основные стили и анимации */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.8;
+        }
+    }
+
+    @keyframes shimmer {
+        0% {
+            background-position: -1000px 0;
+        }
+        100% {
+            background-position: 1000px 0;
+        }
+    }
+
+    /* Основной контейнер */
+    .stApp {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    /* Главный заголовок */
     .main-header {
-        font-size: 2.5rem;
+        font-size: 2.8rem;
         font-weight: 700;
-        color: #1E40AF;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         text-align: center;
-        padding: 1rem 0;
-        margin-bottom: 2rem;
+        padding: 2rem 0 1rem 0;
+        margin-bottom: 1rem;
+        animation: fadeIn 0.8s ease-out;
+        letter-spacing: -0.02em;
+    }
+
+    /* Подзаголовок */
+    .stMarkdown p {
+        animation: fadeIn 1s ease-out;
+    }
+
+    /* Карточки метрик */
+    [data-testid="stMetricValue"] {
+        font-size: 2rem !important;
+        font-weight: 600 !important;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    [data-testid="metric-container"] {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease;
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    [data-testid="metric-container"]:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(102, 126, 234, 0.15);
+        border-color: rgba(102, 126, 234, 0.3);
+    }
+
+    /* Чат сообщения */
+    [data-testid="stChatMessage"] {
+        background: rgba(255, 255, 255, 0.8) !important;
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.9);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+        margin-bottom: 1rem;
+        animation: slideIn 0.4s ease-out;
+        transition: all 0.3s ease;
+    }
+
+    [data-testid="stChatMessage"]:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        transform: translateX(3px);
+    }
+
+    /* Инпут для чата */
+    [data-testid="stChatInput"] {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border-radius: 24px;
+        border: 2px solid rgba(102, 126, 234, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    [data-testid="stChatInput"]:focus-within {
+        border-color: rgba(102, 126, 234, 0.5);
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    /* Кнопки */
+    .stButton button {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(102, 126, 234, 0.2);
+        border-radius: 12px;
+        padding: 0.6rem 1.2rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .stButton button:hover {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-color: transparent;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    /* Сайдбар */
+    [data-testid="stSidebar"] {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(20px);
+        border-right: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] {
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    /* Экспандеры */
+    [data-testid="stExpander"] {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        border: 1px solid rgba(102, 126, 234, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    [data-testid="stExpander"]:hover {
+        border-color: rgba(102, 126, 234, 0.3);
+        box-shadow: 0 4px 16px rgba(102, 126, 234, 0.08);
+    }
+
+    /* Прогресс бары */
+    .stProgress > div > div {
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    /* Divider */
+    hr {
+        border: none;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.2), transparent);
+        margin: 2rem 0;
+    }
+
+    /* Заголовки */
+    h1, h2, h3 {
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+    }
+
+    /* Спиннер загрузки */
+    [data-testid="stSpinner"] > div {
+        border-color: rgba(102, 126, 234, 0.2);
+        border-top-color: #667eea;
+    }
+
+    /* Графики */
+    .js-plotly-plot {
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+        transition: all 0.3s ease;
+    }
+
+    .js-plotly-plot:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        transform: scale(1.02);
+    }
+
+    /* Download button */
+    [data-testid="stDownloadButton"] button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+    }
+
+    [data-testid="stDownloadButton"] button:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+    }
+
+    /* File uploader */
+    [data-testid="stFileUploader"] {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        border: 2px dashed rgba(102, 126, 234, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    [data-testid="stFileUploader"]:hover {
+        border-color: rgba(102, 126, 234, 0.5);
+        background: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Подзаголовки секций */
+    .element-container h2 {
+        animation: slideIn 0.6s ease-out;
+    }
+
+    /* Контейнеры */
+    .element-container {
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Скроллбар */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        opacity: 0.8;
     }
 </style>
 """,unsafe_allow_html =True )
